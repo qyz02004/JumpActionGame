@@ -34,8 +34,10 @@ public class GameScreen extends ScreenAdapter {
 
     Sprite mBg;
     OrthographicCamera mCamera;
+    OrthographicCamera mGuiCamera; // ←追加する
 
     FitViewport mViewPort;
+    FitViewport mGuiViewPort; // ←追加する
 
     Random mRandom;
     List<Step> mSteps;
@@ -62,6 +64,11 @@ public class GameScreen extends ScreenAdapter {
         mCamera.setToOrtho(false, CAMERA_WIDTH, CAMERA_HEIGHT);
         mViewPort = new FitViewport(CAMERA_WIDTH, CAMERA_HEIGHT, mCamera);
 
+        // GUI用のカメラを設定する
+        mGuiCamera = new OrthographicCamera(); // ←追加する
+        mGuiCamera.setToOrtho(false, GUI_WIDTH, GUI_HEIGHT); // ←追加する
+        mGuiViewPort = new FitViewport(GUI_WIDTH, GUI_HEIGHT, mGuiCamera); // ←追加する
+
         // メンバ変数の初期化
         mRandom = new Random();
         mSteps = new ArrayList<Step>();
@@ -80,7 +87,12 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // カメラの中心を超えたらカメラを上に移動させる つまりキャラが画面の上半分には絶対に行かない
+        if (mPlayer.getY() > mCamera.position.y) { // ←追加する
+            mCamera.position.y = mPlayer.getY(); // ←追加する
+        } // ←追加する
         // カメラの座標をアップデート（計算）し、スプライトの表示に反映させる
+
         mCamera.update();
         mGame.batch.setProjectionMatrix(mCamera.combined);
 
@@ -113,6 +125,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         mViewPort.update(width, height);
+        mGuiViewPort.update(width, height);
     }
 
     // ステージを作成する
@@ -210,9 +223,9 @@ public class GameScreen extends ScreenAdapter {
     private void updatePlaying(float delta) {
         float accel = 0;
         if (Gdx.input.isTouched()) {
-            mViewPort.unproject(mTouchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-            Rectangle left = new Rectangle(0, 0, CAMERA_WIDTH / 2, CAMERA_HEIGHT);
-            Rectangle right = new Rectangle(CAMERA_WIDTH / 2, 0, CAMERA_WIDTH / 2, CAMERA_HEIGHT);
+            mGuiViewPort.unproject(mTouchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0)); // ←追加する
+            Rectangle left = new Rectangle(0, 0, GUI_WIDTH / 2, GUI_HEIGHT); // ←修正する
+            Rectangle right = new Rectangle(GUI_WIDTH / 2, 0, GUI_WIDTH / 2, GUI_HEIGHT); // ←修正する
             if (left.contains(mTouchPoint.x, mTouchPoint.y)) {
                 accel = 5.0f;
             }
