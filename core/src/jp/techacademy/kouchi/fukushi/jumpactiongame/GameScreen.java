@@ -161,6 +161,52 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    private void checkCollision() {
+        // UFO(ゴールとの当たり判定)
+        if (mPlayer.getBoundingRectangle().overlaps(mUfo.getBoundingRectangle())) {
+            mGameState = GAME_STATE_GAMEOVER;
+            return;
+        }
+
+        // Starとの当たり判定
+        for (int i = 0; i < mStars.size(); i++) {
+            Star star = mStars.get(i);
+
+            if (star.mState == Star.STAR_NONE) {
+                continue;
+            }
+
+            if (mPlayer.getBoundingRectangle().overlaps(star.getBoundingRectangle())) {
+                star.get();
+                break;
+            }
+        }
+
+        // Stepとの当たり判定
+        // 上昇中はStepとの当たり判定を確認しない
+        if (mPlayer.velocity.y > 0) {
+            return;
+        }
+
+        for (int i = 0; i < mSteps.size(); i++) {
+            Step step = mSteps.get(i);
+
+            if (step.mState == Step.STEP_STATE_VANISH) {
+                continue;
+            }
+
+            if (mPlayer.getY() > step.getY()) {
+                if (mPlayer.getBoundingRectangle().overlaps(step.getBoundingRectangle())) {
+                    mPlayer.hitStep();
+                    if (mRandom.nextFloat() > 0.5f) {
+                        step.vanish();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
     private void updatePlaying(float delta) {
         float accel = 0;
         if (Gdx.input.isTouched()) {
@@ -186,6 +232,9 @@ public class GameScreen extends ScreenAdapter {
         }
         mPlayer.update(delta, accel);
         mHeightSoFar = Math.max(mPlayer.getY(), mHeightSoFar);
+
+        // 当たり判定を行う
+        checkCollision(); // ←追加する
     }
 
     private void updateGameOver() {
