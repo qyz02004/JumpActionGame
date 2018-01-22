@@ -3,6 +3,7 @@ package jp.techacademy.kouchi.fukushi.jumpactiongame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences; // ←追加する
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -58,6 +59,8 @@ public class GameScreen extends ScreenAdapter {
     int mHighScore; // ←追加する
     Preferences mPrefs; // ←追加する
 
+    Sound mSoundGameOver;   // 敵と衝突した時の音
+
     public GameScreen(JumpActionGame game) {
         mGame = game;
 
@@ -88,6 +91,8 @@ public class GameScreen extends ScreenAdapter {
         mFont = new BitmapFont(Gdx.files.internal("font.fnt"), Gdx.files.internal("font.png"), false);
         mFont.getData().setScale(0.8f);
         mScore = 0;
+
+        mSoundGameOver = Gdx.audio.newSound(Gdx.files.internal("data/shot-struck1.mp3"));
 
         // ハイスコアをPreferencesから取得する
         mPrefs = Gdx.app.getPreferences("jp.techacademy.kouchi.fukushi.jumpactiongame"); // ←追加する
@@ -254,6 +259,9 @@ public class GameScreen extends ScreenAdapter {
 //            }
 
             if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
+                // 効果音再生
+                mSoundGameOver.play(1.0f);
+
                 Gdx.app.log("JampActionGame", "GAME OVER");
                 mGameState = GAME_STATE_GAMEOVER;
                 return;
@@ -325,6 +333,9 @@ public class GameScreen extends ScreenAdapter {
 
     private void checkGameOver() {
         if (mHeightSoFar - CAMERA_HEIGHT / 2 > mPlayer.getY()) {
+            // 効果音再生
+            mSoundGameOver.play(1.0f);
+
             Gdx.app.log("JampActionGame", "GAMEOVER");
             mGameState = GAME_STATE_GAMEOVER;
         }
