@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class Enemy extends GameObject {
     // 横幅、高さ
-    public static final float ENEMY_WIDTH = 2.0f;
-    public static final float ENEMY_HEIGHT = 0.5f;
+    public static final float ENEMY_WIDTH = 1.0f;
+    public static final float ENEMY_HEIGHT = 1.0f;
 
     // 速度
     public static final float ENEMY_VELOCITY = 2.0f;

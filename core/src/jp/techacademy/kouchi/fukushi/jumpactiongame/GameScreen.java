@@ -162,7 +162,7 @@ public class GameScreen extends ScreenAdapter {
         // テクスチャの準備
         Texture stepTexture = new Texture("step.png");
         Texture starTexture = new Texture("star.png");
-        Texture enemyTexture = new Texture("uma.png");
+        Texture enemyTexture = new Texture("enemy.png");
         Texture playerTexture = new Texture("uma.png");
         Texture ufoTexture = new Texture("ufo.png");
 
@@ -189,7 +189,7 @@ public class GameScreen extends ScreenAdapter {
             // Enemy
             // 後半の方が難しくなるようにEnemyの出現確率を変更
             if (mRandom.nextFloat() < 0.7f * y / WORLD_HEIGHT ) {
-                Enemy enemy = new Enemy(enemyTexture, 0, 0, 144, 36);
+                Enemy enemy = new Enemy(enemyTexture, 0, 0, 625, 625);
                 x = WORLD_WIDTH * mRandom.nextFloat();
                 enemy.setPosition(x, y + Enemy.ENEMY_HEIGHT + mRandom.nextFloat() * maxJumpHeight);
                 mEnemys.add(enemy);
