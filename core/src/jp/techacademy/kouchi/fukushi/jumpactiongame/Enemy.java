@@ -46,7 +46,7 @@ public class Enemy extends GameObject {
         setX(x);
 
         float y = getY() + velocity.y * deltaTime;
-        if (y > mY + GameScreen.CAMERA_HEIGHT - ENEMY_HEIGHT) {
+        if (y > mY + GameScreen.MAX_JUMP_HEIGHT - ENEMY_HEIGHT) {
             velocity.y = -velocity.y;
         }
         else if ( y < mY ) {

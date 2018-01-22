@@ -32,6 +32,8 @@ public class GameScreen extends ScreenAdapter {
     // 重力
     static final float GRAVITY = -12;
 
+    static final float MAX_JUMP_HEIGHT = Player.PLAYER_JUMP_VELOCITY * Player.PLAYER_JUMP_VELOCITY / (2 * -GRAVITY);
+
     private JumpActionGame mGame;
 
     Sprite mBg;
@@ -169,7 +171,6 @@ public class GameScreen extends ScreenAdapter {
         // StepとStarをゴールの高さまで配置していく
         float y = 0;
 
-        float maxJumpHeight = Player.PLAYER_JUMP_VELOCITY * Player.PLAYER_JUMP_VELOCITY / (2 * -GRAVITY);
         while (y < WORLD_HEIGHT - 5) {
             // Step
             int stepType = mRandom.nextFloat() > 0.8f ? Step.STEP_TYPE_MOVING : Step.STEP_TYPE_STATIC;
@@ -188,16 +189,16 @@ public class GameScreen extends ScreenAdapter {
 
             // Enemy
             // 後半の方が難しくなるようにEnemyの出現確率を変更
-            if (mRandom.nextFloat() < (float)Math.tanh(y/WORLD_HEIGHT)) {
+            if (mRandom.nextFloat() < 0.1f * (float)Math.tanh(y)) {
 //            if (mRandom.nextFloat() < 1.0f) { // debug
                 Enemy enemy = new Enemy(enemyTexture, 60, 70, 560-60, 610-70);
                 x = WORLD_WIDTH * mRandom.nextFloat();
-                enemy.setPosition(x, y + Enemy.ENEMY_HEIGHT + mRandom.nextFloat() * maxJumpHeight);
+                enemy.setPosition(x, y + Enemy.ENEMY_HEIGHT + mRandom.nextFloat() * MAX_JUMP_HEIGHT);
                 mEnemys.add(enemy);
             }
-
-            y += (maxJumpHeight - 0.5f);
-            y -= mRandom.nextFloat() * (maxJumpHeight / 3);
+//
+            y += (MAX_JUMP_HEIGHT - 0.5f);
+            y -= mRandom.nextFloat() * (MAX_JUMP_HEIGHT / 3);
         }
 
         // Playerを配置
