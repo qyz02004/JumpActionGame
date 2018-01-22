@@ -188,8 +188,9 @@ public class GameScreen extends ScreenAdapter {
 
             // Enemy
             // 後半の方が難しくなるようにEnemyの出現確率を変更
-            if (mRandom.nextFloat() < 0.7f * y / WORLD_HEIGHT ) {
-                Enemy enemy = new Enemy(enemyTexture, 0, 0, 625, 625);
+            if (mRandom.nextFloat() < (float)Math.tanh(y/WORLD_HEIGHT)) {
+//            if (mRandom.nextFloat() < 1.0f) { // debug
+                Enemy enemy = new Enemy(enemyTexture, 60, 70, 560-60, 610-70);
                 x = WORLD_WIDTH * mRandom.nextFloat();
                 enemy.setPosition(x, y + Enemy.ENEMY_HEIGHT + mRandom.nextFloat() * maxJumpHeight);
                 mEnemys.add(enemy);

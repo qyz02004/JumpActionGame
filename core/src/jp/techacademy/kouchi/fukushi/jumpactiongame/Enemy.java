@@ -34,25 +34,22 @@ public class Enemy extends GameObject {
     // 座標を更新する
     public void update(float deltaTime) {
         float x = getX() + velocity.x * deltaTime;
+
+        if (x > GameScreen.CAMERA_WIDTH - ENEMY_WIDTH ) {
+            x = GameScreen.CAMERA_WIDTH - ENEMY_WIDTH;
+            velocity.x = -velocity.x;
+        }
+        else if ( x < 0 ) {
+            x = 0;
+            velocity.x = -velocity.x;
+        }
         setX(x);
 
-        if (x > GameScreen.CAMERA_WIDTH + ENEMY_WIDTH / 2 ) {
-            velocity.x = -velocity.x;
-            x = GameScreen.CAMERA_WIDTH + ENEMY_WIDTH / 2;
-        }
-        else if (x < - ENEMY_WIDTH / 2 ) {
-            velocity.x = -velocity.x;
-            x = - ENEMY_WIDTH / 2;
-        }
-        setX(x);
-
-        float y = getY()+ velocity.y * deltaTime;
-        if (y < mY - GameScreen.CAMERA_HEIGHT + ENEMY_HEIGHT) {
-            y = mY - GameScreen.CAMERA_HEIGHT + ENEMY_HEIGHT;
+        float y = getY() + velocity.y * deltaTime;
+        if (y > mY + GameScreen.CAMERA_HEIGHT - ENEMY_HEIGHT) {
             velocity.y = -velocity.y;
         }
-        else if (y > mY + GameScreen.CAMERA_HEIGHT - ENEMY_HEIGHT ) {
-            y =  mY + GameScreen.CAMERA_HEIGHT - ENEMY_HEIGHT;
+        else if ( y < mY ) {
             velocity.y = -velocity.y;
         }
         setY(y);
