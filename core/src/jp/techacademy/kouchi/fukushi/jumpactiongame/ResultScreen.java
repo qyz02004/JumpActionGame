@@ -26,6 +26,11 @@ public class ResultScreen extends ScreenAdapter {
     public ResultScreen(JumpActionGame game, int score) {
 
         mGame = game;
+
+        if (mGame.mRequestHandler != null) { // ←追加する
+            mGame.mRequestHandler.showAds(true); // ←追加する
+        } // ←追加する
+
         mScore = score;
 
         // 背景の準備
@@ -60,6 +65,9 @@ public class ResultScreen extends ScreenAdapter {
         mGame.batch.end();
 
         if (Gdx.input.justTouched()) {
+            if (mGame.mRequestHandler != null) { // ←追加する
+                mGame.mRequestHandler.showAds(false); // ←追加する
+            } // ←追加する
             mGame.setScreen(new GameScreen(mGame));
         }
     }
