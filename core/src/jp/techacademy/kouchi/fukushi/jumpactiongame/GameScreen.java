@@ -171,6 +171,7 @@ public class GameScreen extends ScreenAdapter {
 
         float maxJumpHeight = Player.PLAYER_JUMP_VELOCITY * Player.PLAYER_JUMP_VELOCITY / (2 * -GRAVITY);
         while (y < WORLD_HEIGHT - 5) {
+            // Step
             int stepType = mRandom.nextFloat() > 0.8f ? Step.STEP_TYPE_MOVING : Step.STEP_TYPE_STATIC;
             float x = mRandom.nextFloat() * (WORLD_WIDTH - Step.STEP_WIDTH);
 
@@ -178,19 +179,18 @@ public class GameScreen extends ScreenAdapter {
             step.setPosition(x, y);
             mSteps.add(step);
 
+            // Star
             if (mRandom.nextFloat() > 0.6f) {
                 Star star = new Star(starTexture, 0, 0, 72, 72);
                 star.setPosition(step.getX() + mRandom.nextFloat(), step.getY() + Star.STAR_HEIGHT + mRandom.nextFloat() * 3);
                 mStars.add(star);
             }
 
-            if (mRandom.nextFloat() > 0.0f) {
-                int enemyType = mRandom.nextFloat() > 0.5f ? Enemy.ENEMY_TYPE_HORIZONTAL : Enemy.ENEMY_TYPE_VERTICAL;
-                Enemy enemy = new Enemy(enemyType, enemyTexture, 0, 0, 72, 72);
+            // Enemy
+            // 後半の方が難しくなるようにEnemyの出現確率を変更
+            if (mRandom.nextFloat() < 0.7f * y / WORLD_HEIGHT ) {
+                Enemy enemy = new Enemy(enemyTexture, 0, 0, 144, 36);
                 x = WORLD_WIDTH * mRandom.nextFloat();
-                if ( x > WORLD_WIDTH ) {
-                    x -= WORLD_WIDTH;
-                }
                 enemy.setPosition(x, y + Enemy.ENEMY_HEIGHT + mRandom.nextFloat() * maxJumpHeight);
                 mEnemys.add(enemy);
             }

@@ -9,31 +9,20 @@ public class Enemy extends GameObject {
     public static final float ENEMY_WIDTH = 2.0f;
     public static final float ENEMY_HEIGHT = 0.5f;
 
-    // タイプ（垂直に動くタイプ）
-    public static final int ENEMY_TYPE_VERTICAL = 0;
-
-    // タイプ（水平に動くタイプ）
-    public static final int ENEMY_TYPE_HORIZONTAL = 1;
-
     // 速度
-    public static final float ENEMY_VELOCITY = 3.0f;
+    public static final float ENEMY_VELOCITY = 2.0f;
 
-    int mType;
-    int mState;
     float mX;
     float mY;
     Random mRandom;
 
-    public Enemy(int type, Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
+    public Enemy( Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
         super(texture, srcX, srcY, srcWidth, srcHeight);
         setSize(ENEMY_WIDTH, ENEMY_HEIGHT);
-        mType = type;
         mRandom = new Random();
-        if (mType == ENEMY_TYPE_HORIZONTAL) {
-            velocity.x = ENEMY_VELOCITY;
-        } else if ( mType == ENEMY_TYPE_VERTICAL ) {
-            velocity.y = ENEMY_VELOCITY;
-        }
+        double deg = mRandom.nextDouble() * 2 * Math.PI;
+        velocity.x = (float) (ENEMY_VELOCITY * Math.sin(deg));
+        velocity.y = (float) (ENEMY_VELOCITY * Math.cos(deg));
     }
     @Override
     public void setPosition (float x, float y) {
@@ -42,29 +31,30 @@ public class Enemy extends GameObject {
         mY = y;
     }
 
-
     // 座標を更新する
     public void update(float deltaTime) {
-        if (mType == ENEMY_TYPE_HORIZONTAL) {
-            float x = getX() + velocity.x * deltaTime;
-            setX(x);
+        float x = getX() + velocity.x * deltaTime;
+        setX(x);
 
-            if (x > GameScreen.CAMERA_WIDTH + ENEMY_WIDTH / 2 ) {
-                velocity.x = -velocity.x;
-            }
-            else if (x < - ENEMY_WIDTH / 2 ) {
-                velocity.x = -velocity.x;
-            }
-        } else if ( mType == ENEMY_TYPE_VERTICAL ) {
-            float y = getY()+ velocity.y * deltaTime;
-            setY(y);
-            if (y < mY - GameScreen.CAMERA_HEIGHT ) {
-                velocity.y = -velocity.y;
-            }
-            else if (y > mY + GameScreen.CAMERA_HEIGHT ) {
-                velocity.y = -velocity.y;
-            }
+        if (x > GameScreen.CAMERA_WIDTH + ENEMY_WIDTH / 2 ) {
+            velocity.x = -velocity.x;
+            x = GameScreen.CAMERA_WIDTH + ENEMY_WIDTH / 2;
         }
+        else if (x < - ENEMY_WIDTH / 2 ) {
+            velocity.x = -velocity.x;
+            x = - ENEMY_WIDTH / 2;
+        }
+        setX(x);
 
+        float y = getY()+ velocity.y * deltaTime;
+        if (y < mY - GameScreen.CAMERA_HEIGHT + ENEMY_HEIGHT) {
+            y = mY - GameScreen.CAMERA_HEIGHT + ENEMY_HEIGHT;
+            velocity.y = -velocity.y;
+        }
+        else if (y > mY + GameScreen.CAMERA_HEIGHT - ENEMY_HEIGHT ) {
+            y =  mY + GameScreen.CAMERA_HEIGHT - ENEMY_HEIGHT;
+            velocity.y = -velocity.y;
+        }
+        setY(y);
     }
 }
