@@ -59,7 +59,8 @@ public class GameScreen extends ScreenAdapter {
     int mHighScore; // ←追加する
     Preferences mPrefs; // ←追加する
 
-    Sound mSoundGameOver;   // 敵と衝突した時の音
+    Sound mSoundGameOver;   // ゲームオーバー時の音
+    Sound mSoundEnemyVanish;   // 敵が消えた時の音
 
     public GameScreen(JumpActionGame game) {
         mGame = game;
@@ -93,6 +94,7 @@ public class GameScreen extends ScreenAdapter {
         mScore = 0;
 
         mSoundGameOver = Gdx.audio.newSound(Gdx.files.internal("data/shot-struck1.mp3"));
+        mSoundEnemyVanish = Gdx.audio.newSound(Gdx.files.internal("data/flee1.mp3"));
 
         // ハイスコアをPreferencesから取得する
         mPrefs = Gdx.app.getPreferences("jp.techacademy.kouchi.fukushi.jumpactiongame"); // ←追加する
@@ -260,6 +262,8 @@ public class GameScreen extends ScreenAdapter {
 
             if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
                 if (mPlayer.velocity.y < 0) {
+                    // 効果音再生
+                    mSoundEnemyVanish.play(1.0f);
                     // 下降中にEnemyに衝突したらEnemyが消える
                     enemy.vanish();
                     scoreUp();  // スコア更新
