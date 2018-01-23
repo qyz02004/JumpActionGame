@@ -173,9 +173,24 @@ public class GameScreen extends ScreenAdapter {
         Texture playerTexture = new Texture("uma.png");
         Texture ufoTexture = new Texture("ufo.png");
 
-        // StepとStarをゴールの高さまで配置していく
+        // Enemyをゴールの高さまで配置していく
         float y = 0;
 
+        while (y < WORLD_HEIGHT - 5) {
+            // Enemy
+            // 後半の方が難しくなるようにEnemyの出現確率を変更
+            if (mRandom.nextFloat() <  (float)Math.tanh(y/CAMERA_HEIGHT)) {
+                Enemy enemy = new Enemy(enemyTexture, 60, 70, 560-60, 610-70);
+                enemy.setPosition((WORLD_WIDTH - Enemy.ENEMY_WIDTH) * mRandom.nextFloat(),
+                        y + Enemy.ENEMY_HEIGHT + mRandom.nextFloat() * CAMERA_HEIGHT);
+                mEnemys.add(enemy);
+            }
+            // 一画面毎に更新
+            y += CAMERA_HEIGHT;
+        }
+
+        // StepとStarをゴールの高さまで配置していく
+        y = 0;
         while (y < WORLD_HEIGHT - 5) {
             // Step
             int stepType = mRandom.nextFloat() > 0.8f ? Step.STEP_TYPE_MOVING : Step.STEP_TYPE_STATIC;
@@ -192,16 +207,6 @@ public class GameScreen extends ScreenAdapter {
                 mStars.add(star);
             }
 
-            // Enemy
-            // 後半の方が難しくなるようにEnemyの出現確率を変更
-            if (mRandom.nextFloat() < 0.1f * (float)Math.tanh(y)) {
-//            if (mRandom.nextFloat() < 1.0f) { // debug
-                Enemy enemy = new Enemy(enemyTexture, 60, 70, 560-60, 610-70);
-                x = WORLD_WIDTH * mRandom.nextFloat();
-                enemy.setPosition(x, y + Enemy.ENEMY_HEIGHT + mRandom.nextFloat() * MAX_JUMP_HEIGHT);
-                mEnemys.add(enemy);
-            }
-//
             y += (MAX_JUMP_HEIGHT - 0.5f);
             y -= mRandom.nextFloat() * (MAX_JUMP_HEIGHT / 3);
         }
