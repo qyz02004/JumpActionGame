@@ -12,9 +12,14 @@ public class Enemy extends GameObject {
     // 速度
     public static final float ENEMY_VELOCITY = 2.0f;
 
+    // 状態（通常と消えた状態）
+    public static final int ENEMY_STATE_NORMAL = 0;
+    public static final int ENEMY_STATE_VANISH = 1;
+
     float mX;
     float mY;
     Random mRandom;
+    int mState;
 
     public Enemy( Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
         super(texture, srcX, srcY, srcWidth, srcHeight);
@@ -23,6 +28,7 @@ public class Enemy extends GameObject {
         double deg = mRandom.nextDouble() * 2 * Math.PI;
         velocity.x = (float) (ENEMY_VELOCITY * Math.sin(deg));
         velocity.y = (float) (ENEMY_VELOCITY * Math.cos(deg));
+        mState = ENEMY_STATE_NORMAL;
     }
     @Override
     public void setPosition (float x, float y) {
@@ -53,5 +59,12 @@ public class Enemy extends GameObject {
             velocity.y = -velocity.y;
         }
         setY(y);
+    }
+    // 消える
+    public void vanish() {
+        mState = ENEMY_STATE_VANISH;
+        setAlpha(0);
+        velocity.x = 0;
+        velocity.y = 0;
     }
 }

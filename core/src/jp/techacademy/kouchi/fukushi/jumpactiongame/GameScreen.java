@@ -244,13 +244,7 @@ public class GameScreen extends ScreenAdapter {
 
             if (mPlayer.getBoundingRectangle().overlaps(star.getBoundingRectangle())) {
                 star.get();
-                mScore++; // ←追加する
-                if (mScore > mHighScore) { // ←追加する
-                    mHighScore = mScore; // ←追加する
-                    //ハイスコアをPreferenceに保存する
-                    mPrefs.putInteger("HIGHSCORE", mHighScore); // ←追加する
-                    mPrefs.flush(); // ←追加する
-                } // ←追加する
+                scoreUp();  // スコア更新
                 break;
             }
         }
@@ -259,17 +253,26 @@ public class GameScreen extends ScreenAdapter {
         for (int i = 0; i < mEnemys.size(); i++) {
             Enemy enemy = mEnemys.get(i);
 
-//            if (enemy.mState == Enemy.ENEMY_NONE) {
-//                continue;
-//            }
+            // 消えた敵は無視する
+            if (enemy.mState == Enemy.ENEMY_STATE_VANISH) {
+                continue;
+            }
 
             if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
-                // 効果音再生
-                mSoundGameOver.play(1.0f);
+                if (mPlayer.velocity.y < 0) {
+                    // 下降中にEnemyに衝突したらEnemyが消える
+                    enemy.vanish();
+                    scoreUp();  // スコア更新
+                    // Stepを踏んだ時と同じ処理を実行
+                    mPlayer.hitStep();
+                } else {
+                    // 効果音再生
+                    mSoundGameOver.play(1.0f);
 
-                Gdx.app.log("JampActionGame", "GAME OVER");
-                mGameState = GAME_STATE_GAMEOVER;
-                return;
+                    Gdx.app.log("JampActionGame", "GAME OVER");
+                    mGameState = GAME_STATE_GAMEOVER;
+                    return;
+                }
             }
         }
 
@@ -296,6 +299,16 @@ public class GameScreen extends ScreenAdapter {
                 }
             }
         }
+    }
+
+    private void scoreUp() {
+        mScore++; // ←追加する
+        if (mScore > mHighScore) { // ←追加する
+            mHighScore = mScore; // ←追加する
+            //ハイスコアをPreferenceに保存する
+            mPrefs.putInteger("HIGHSCORE", mHighScore); // ←追加する
+            mPrefs.flush(); // ←追加する
+        } // ←追加する
     }
 
     private void updatePlaying(float delta) {
